@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">NightMode</string>
+    <string name="app_name">夜览</string>
+    <string name="night_mode">夜间模式</string>
+    <string name="learn_principle">了解工作原理</string>
+    <string name="principle">工作原理</string>
+    <string name="principle_info">《夜览》使用开源库 <a href="https://github.com/ChickenHook/RestrictionBypass">RestrictionBypass</a> 来绕过普通应用无法访问 non-SDK 接口的限制，这种方式并不稳定，有可能导致应用发生崩溃。\n
+        正常情况下，点击按钮后可能需要 1～2 秒才能完成配置更改，请您耐心等待一段时间。\n
+
+    </string>
+    <string name="close">关闭</string>
+    <string name="bottom_logo">a android log</string>
 </resources>
