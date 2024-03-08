@@ -1,18 +1,21 @@
 package com.josense.nightmode;
 
-import android.annotation.SuppressLint;
+import static com.josense.nightmode.ByPassSwitch.switchUiMode;
+
+import android.app.AlertDialog;
 import android.app.UiModeManager;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.dialog.MaterialDialogs;
 import com.josense.nightmode.databinding.ActivityMainBinding;
 
-import java.lang.reflect.InvocationTargetException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,8 +32,10 @@ public class MainActivity extends AppCompatActivity {
         systemService = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
 
         binding.principleButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, PrincipleActivity.class);
-            startActivity(intent);
+            showDialog(this,
+                    getString(R.string.principle),
+                    getString(R.string.principle_info),
+                    getString(R.string.close));
         });
     }
 
@@ -40,45 +45,28 @@ public class MainActivity extends AppCompatActivity {
         setDayNightButtonState();
         binding.dayNightSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                switchUiMode(UiModeManager.MODE_NIGHT_YES);
+                switchUiMode(UiModeManager.MODE_NIGHT_YES, systemService);
             } else {
-                switchUiMode(UiModeManager.MODE_NIGHT_NO);
+                switchUiMode(UiModeManager.MODE_NIGHT_NO, systemService);
             }
         });
-    }
-
-    private void switchUiMode(int mode) {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            switchUiModeForApiLess28(mode);
-        } else {
-            switchUiModeForApiGreat29(mode);
-        }
-    }
-
-    @SuppressLint("BlockedPrivateApi")
-    private void switchUiModeForApiGreat29(int mode) {
-        try {
-            if (mode == UiModeManager.MODE_NIGHT_NO) {
-                systemService.getClass().getDeclaredMethod("setNightModeActivated", boolean.class)
-                        .invoke(systemService, false);
-            } else {
-                systemService.getClass().getDeclaredMethod("setNightModeActivated", boolean.class)
-                        .invoke(systemService, true);
-            }
-        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ignored) {
-        }
-    }
-
-    private void switchUiModeForApiLess28(int mode) {
-        try {
-            systemService.getClass().getDeclaredMethod("setNightMode", int.class)
-                    .invoke(systemService, mode);
-        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ignored) {
-        }
     }
 
     private void setDayNightButtonState() {
         boolean realNightMode = systemService.getNightMode() == UiModeManager.MODE_NIGHT_YES;
         binding.dayNightSwitch.setChecked(realNightMode);
+    }
+
+    public static void showDialog(Context context, String title, String message, String buttonText) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton(buttonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss(); // 关闭对话框
+            }
+        });
+        builder.show();
     }
 }

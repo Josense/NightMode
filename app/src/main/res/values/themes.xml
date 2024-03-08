@@ -31,5 +31,7 @@
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
     </style>
 
-    <style name="Theme.NightMode" parent="Base.Theme.NightMode" />
+    <style name="Theme.NightMode" parent="Base.Theme.NightMode">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
 </resources>
